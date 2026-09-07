@@ -18,7 +18,7 @@ prontas para usar, sem pedir confirmação a cada passo.
 
 ## Arquitetura — e por que ela é assim
 
-**Um único arquivo**: `alvexz-store.html` (~260 KB). HTML + CSS + JS vanilla,
+**Um único arquivo**: `index.html` (~270 KB; chamava `alvexz-store.html` até 2026-09-06). `404.html` é CÓPIA dele gerada por `node ferramentas/publicar.mjs` — rodar antes de cada push (GitHub Pages devolve o 404 para qualquer rota). HTML + CSS + JS vanilla,
 sem build, sem framework. Isso é decisão, não falta de recurso: o dono abre o
 arquivo com dois cliques para testar, e a loja funciona offline. NÃO migrar
 para React/Next sem ele pedir.
@@ -28,7 +28,8 @@ para React/Next sem ele pedir.
   `href="#/..."`; em modo History um MutationObserver os reescreve
   (`normalizeLinks`). Hospedar exige rewrite de tudo para o index — arquivos
   prontos em `hospedagem/`. Subpasta exige `window.ALVEXZ_BASE='/pasta'` ANTES
-  do script principal. Para rodar local: `node servir.mjs` (porta 4700).
+  do script principal; em `*.github.io` o BASE é detectado sozinho (primeiro
+  segmento do caminho). Para rodar local: `node servir.mjs` (porta 4700).
 - **Dois modos de dados** (desde 2026-09-05): `ONLINE` (banco Supabase) e
   local (`SEED` + `Persist`/localStorage). O supabase-js entra por UMD do
   jsdelivr (liberado na CSP). `ONLINE` só vira true se `loadCatalog()`
@@ -63,15 +64,27 @@ lista de marcas em mono. Header em vidro (backdrop-filter).
 Fontes: **Bricolage Grotesque** (display, `font-variation-settings:"opsz" 96`
 nos títulos grandes), **Instrument Serif** itálico (acentos editoriais:
 eyebrows, assinatura da história, título das marcas), Inter (texto), IBM Plex
-Mono (dados). Archivo saiu.
+Mono (dados). Archivo saiu. Desde a v3 (2026-09-06) a Bricolage carrega o eixo
+`wdth` e os títulos grandes usam `font-stretch` 78–88% (condensado, cara de
+pôster); o logo é "ALVEXZ" condensado + "imports" em serifa itálica.
 
 O dono pediu explicitamente "sem cara de IA". Evitar: seta "→" em botão,
 rótulos ALL-CAPS acima de título (os `.eyebrow` que restam são serifa itálica
 minúscula, não mono caps), meta-strings com "·" (usar " / "), animação de
 entrada em toda seção. Cards: aspect 5/6, fundo #101014, borda quase
-invisível, hover sobe 4px. Home: hero → Destaques/Mais vendidos/Novidades/
-Promoções → .story → .insta → marcas (simpleicons com fallback) → newsletter
-(iframe Brevo) → rodapé.
+invisível, hover sobe 5px. Home (v3): hero → `.deps` (índice tipográfico dos
+departamentos com contagem) → Destaques/Mais vendidos/Novidades/Promoções →
+`.marq` (marquee de marcas) → .story (com foto `sem-sombra` embaixo) → .insta
+(marquee do @ + link) → marcas (simpleicons com fallback) → newsletter (iframe
+Brevo) → rodapé com wordmark gigante vazado (`.foot-giant`).
+
+Movimento (v3, `initMotion()`; tudo respeita reduced-motion): hero entra em
+cascata + Ken Burns + paralaxe no mouse; `#main.enter` faz fade só quando o
+caminho muda; cards e blocos `.rv` revelam via IntersectionObserver (classe
+`body.rv-on`; se o observer não disparar em 2,5 s, a classe cai e tudo aparece —
+não remover essa segurança); header some rolando para baixo e volta subindo;
+botões têm varredura no hover e efeito magnético nos CTAs principais
+(`pointer:fine` só). Drawer/modal com curva de mola `cubic-bezier(.22,1,.36,1)`.
 
 ## Segurança — invariantes que não se negocia
 
@@ -128,10 +141,13 @@ cancelamento). Checkout de ponta a ponta com Stripe **ainda não** (sem chave).
    e a tela manda para o WhatsApp.
 2. **Dono criar a conta** pelo site (Criar conta → confirmar e-mail): já entra
    como admin. Testar o painel: produtos, fotos, banners, logos, cupons, pedidos.
-3. **Publicar**: renomear para `index.html`, subir com `imagens/` e o arquivo
-   certo de `hospedagem/`, trocar CNPJ/endereço de exemplo pelos reais
-   (Decreto 7.962/2013 — dono avisado; rodapé ainda tem placeholder).
-   Colocar a URL pública em `SITE_URL`.
+3. **Publicado** em 2026-09-06: repo `Jpfamelli/alvexz-imports` (público),
+   GitHub Pages em https://jpfamelli.github.io/alvexz-imports/ (deploy =
+   `node ferramentas/publicar.mjs` + commit + push). Falta: trocar
+   CNPJ/endereço de exemplo pelos reais (Decreto 7.962/2013 — dono avisado),
+   colocar essa URL em `SITE_URL` (secret) e em Auth → URL Configuration →
+   Site URL no painel do Supabase (senão o link de confirmação de e-mail cai
+   em localhost:3000).
 4. Menores: fotos reais das 20 peças (painel → Editar → Enviar fotos),
    formulário Brevo em HTML puro, frete real (hoje tabela por faixa de CEP em
    `supabase/functions/checkout/frete.ts` e `fretes()` no site — manter iguais).
@@ -156,8 +172,9 @@ cancelamento). Checkout de ponta a ponta com Stripe **ainda não** (sem chave).
 6. Cupom BEMVINDOS5 aplica 5%; caixa "18 anos" NÃO existe no checkout.
 7. Modo banco: console deve dizer `loja carregada / banco Supabase / N produtos`.
    Se disser `modo local`, olhar a CSP ou a chave.
-8. Versão anterior guardada em `alvexz-store.v1.html`; a v2 foi aplicada por
-   `ferramentas/patch-v2.mjs` (idempotente).
+8. Versões anteriores em `alvexz-store.v1.html` / `.v2.html` (ignoradas no git);
+   v2 e v3 foram aplicadas por `ferramentas/patch-v2.mjs` e `patch-v3.mjs`
+   (idempotentes, âncoras de texto — patches novos seguem o mesmo padrão).
 
 Login de teste do painel (modo local, sem banco): `gimoreiramendes@gmail.com` +
 qualquer senha de 8+ caracteres. No modo banco a senha é a do Supabase Auth.
