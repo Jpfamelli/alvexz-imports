@@ -1,0 +1,6 @@
+# backups de versões anteriores (ficam só na máquina)
+*.v1.html
+*.v2.html
+node_modules/
+.DS_Store
+Thumbs.db
