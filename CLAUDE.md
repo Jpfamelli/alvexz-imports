@@ -38,7 +38,9 @@ para React/Next sem ele pedir.
 - **Catálogo**: no banco são 20 peças (mesmas do `SEED`, cadastradas via
   `sql/seed-produtos.sql`), variantes por tamanho × cor. No front o produto
   tem `id` = slug (URL), `uuid`, `variantes[]`, `estoque{tam: soma}`, `fotos[]`.
-  Sem foto no bucket, `imgsPadrao()` gera as ilustrações SVG.
+  Sem foto no bucket, `imgsPadrao()` gera as ilustrações SVG (v4, 2026-09-10:
+  estúdio escuro com spot, brilho diagonal, sombra de chão e grão; silhuetas
+  com curvas; fundo claro antigo foi abandonado porque brigava com o tema).
   Categorias: camisetas, calças, moletons, conjuntos, jaquetas, shorts.
   **Não existem** tênis nem acessórios. Grade PP-GG.
 - **Sem avaliações**: eram fictícias e foram removidas. Só religar com
@@ -145,7 +147,7 @@ cancelamento). Checkout de ponta a ponta com Stripe **ainda não** (sem chave).
    GitHub Pages em https://jpfamelli.github.io/alvexz-imports/ (deploy =
    `node ferramentas/publicar.mjs` + commit + push). Falta: trocar
    CNPJ/endereço de exemplo pelos reais (Decreto 7.962/2013 — dono avisado),
-   colocar essa URL em `SITE_URL` (secret) e em Auth → URL Configuration →
+   colocar essa URL em `SITE_URL` (secret); `og:url`/`og:image` no head já apontam para o Pages — trocar quando tiver domínio próprio; e em Auth → URL Configuration →
    Site URL no painel do Supabase (senão o link de confirmação de e-mail cai
    em localhost:3000).
 4. Menores: fotos reais das 20 peças (painel → Editar → Enviar fotos),
@@ -172,8 +174,8 @@ cancelamento). Checkout de ponta a ponta com Stripe **ainda não** (sem chave).
 6. Cupom BEMVINDOS5 aplica 5%; caixa "18 anos" NÃO existe no checkout.
 7. Modo banco: console deve dizer `loja carregada / banco Supabase / N produtos`.
    Se disser `modo local`, olhar a CSP ou a chave.
-8. Versões anteriores em `alvexz-store.v1.html` / `.v2.html` (ignoradas no git);
-   v2 e v3 foram aplicadas por `ferramentas/patch-v2.mjs` e `patch-v3.mjs`
+8. Versões anteriores em `alvexz-store.v1/v2/v3.html` (ignoradas no git);
+   v2, v3 e v4 foram aplicadas por `ferramentas/patch-v2/3/4.mjs`
    (idempotentes, âncoras de texto — patches novos seguem o mesmo padrão).
 
 Login de teste do painel (modo local, sem banco): `gimoreiramendes@gmail.com` +
