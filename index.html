@@ -6,12 +6,25 @@
 <title>ALVEXZ IMPORTS — Streetwear original, importado e conferido</title>
 <meta name="description" content="Loja de streetwear com peças originais Nike, Adidas, Puma, Tommy Hilfiger e Lacoste. Envio seguro para todo o Brasil, pagamento no Pix com desconto ou boleto bancário.">
 <meta name="theme-color" content="#0A0A0C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230A0A0C'/%3E%3Cpath d='M32 10 50 56H40.5L37 46H27L23.5 56H14Zm0 15-3.6 13h7.2Z' fill='%23fff'/%3E%3C/svg%3E">
+<script>
+/* Manifesto e ícone da tela inicial precisam de caminho absoluto, e ele muda
+   conforme a hospedagem (raiz ou subpasta). Montado aqui, antes de tudo. */
+(function(){
+  if(location.protocol!=='http:'&&location.protocol!=='https:')return;
+  var b=(typeof window.ALVEXZ_BASE==='string')?window.ALVEXZ_BASE.replace(/\/+$/,'')
+       :(/\.github\.io$/i.test(location.hostname)?'/'+(location.pathname.split('/')[1]||''):'');
+  var add=function(rel,href){var l=document.createElement('link');l.rel=rel;l.href=b+href;document.head.appendChild(l)};
+  add('manifest','/manifest.webmanifest');
+  add('apple-touch-icon','/imagens/icone-180.png');
+})();
+</script>
 <!-- Defesa em profundidade. Bloqueia script externo, eval, iframe e envio de
      formulário para fora. 'unsafe-inline' é necessário porque o CSS e o JS
      moram neste arquivo; em produção, mova-os para arquivos e remova-o.
      frame-ancestors e X-Frame-Options só funcionam como cabeçalho HTTP —
      configure no servidor (ver README-INTEGRACAO.md, seção 7). -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; frame-src https://*.sibforms.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://viacep.com.br https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; frame-src https://*.sibforms.com; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://viacep.com.br https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'; worker-src 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="canonical" href="https://alvexz.com.br/">
 <meta property="og:type" content="website">
@@ -413,6 +426,27 @@ body.rv-on .rv:not(.in){opacity:0;transform:translateY(20px)}
 .fav[disabled]{opacity:.35;pointer-events:none}
 .fav.beat{animation:beat .45s var(--ease)}
 @keyframes beat{0%,100%{transform:scale(1)}35%{transform:scale(1.35)}}
+/* v5: funcional */
+.fav.hb{top:42px;background:rgba(16,16,20,.82);color:#fff;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.12);box-shadow:none}
+.fav.hb:hover{background:#fff;color:var(--tinta)}
+.fav.hb.on{color:var(--carimbo);background:#fff}
+.fav.hb.on svg{fill:currentColor}
+.pdp-acts{display:flex;gap:8px;margin-top:10px}
+.pdp-acts .btn{flex:1}
+.pdp-acts .btn.on{color:var(--carimbo);border-color:rgba(255,255,255,.3)}
+.pdp-acts .btn.on svg{fill:currentColor}
+.sz-aviso{margin:10px 0 0;font-size:12.5px;color:var(--texto-2)}
+.sz-aviso a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+.szh{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 8px}
+.szh label{font-size:12px;color:var(--texto-2);display:grid;gap:6px}
+.szh-r{margin:8px 0 14px;font-size:14px;min-height:22px;line-height:1.5}
+.sk-hero{margin:10px 10px 0;min-height:540px;border-radius:var(--r-xl)}
+@media(min-width:768px){.sk-hero{margin:16px 22px 0;min-height:560px}}
+@media(min-width:1200px){.sk-hero{margin:16px auto 0;max-width:calc(var(--max) - 44px)}}
+.sk-sec{padding:34px 14px 0;max-width:var(--max);margin:0 auto}
+.sg-row{display:flex;align-items:center;justify-content:space-between;padding-right:12px}
+.sg-x{font-size:11.5px;color:var(--texto-3);text-decoration:underline;text-underline-offset:3px}
+.sg-x:hover{color:#fff}
 .card-b{padding:11px 11px 12px;display:flex;flex-direction:column;flex:1;gap:1px}
 .card-brand{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--texto-3);font-weight:600}
 .card-name{font-size:13px;font-weight:600;line-height:1.28;min-height:30px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:4px}
@@ -1048,7 +1082,7 @@ const CONFIG = {
 
 /* ---------- 1. PERSISTÊNCIA (funciona em artifact, host e offline) -------- */
 const Persist = (()=>{
-  const NS='alvexz:', KEYS=['cart','fav','user','orders','catalog','cookies','recent','brandlogos'];
+  const NS='alvexz:', KEYS=['cart','fav','user','orders','catalog','cookies','recent','brandlogos','buscas'];
   const mem={}; let mode='memory';
   async function init(){
     if(typeof window.storage==='object' && typeof window.storage?.get==='function') mode='api';
@@ -1395,7 +1429,7 @@ function seedCatalog(){
 
 /* ---------- 5. ESTADO ---------- */
 const State={
-  cart:[], fav:[], user:null, orders:[], cookies:null, recent:[],
+  cart:[], fav:[], user:null, orders:[], cookies:null, recent:[], buscas:[],
   q:'', shipping:null, coupon:null, cep:''
 };
 function saveCart(){Persist.set('cart',State.cart);paintBadges()}
@@ -1464,10 +1498,12 @@ function removeItem(idx){
 function toggleFav(pid,btn){
   const i=State.fav.indexOf(pid);
   if(i>-1){State.fav.splice(i,1);toast('Removido dos favoritos.','info')}
-  else{State.fav.push(pid);toast('Salvo nos favoritos.','ok')}
+  else{State.fav.push(pid);toast('Salvo nos favoritos.','ok',{action:'Ver favoritos',onAction:()=>go('/favoritos')})}
   saveFav();
   if(btn){btn.classList.toggle('on',State.fav.includes(pid));btn.classList.remove('beat');void btn.offsetWidth;btn.classList.add('beat')}
-  $$('.fav[data-fav="'+pid+'"]').forEach(b=>b.classList.toggle('on',State.fav.includes(pid)));
+  $$('[data-fav="'+pid+'"]').forEach(b=>{b.classList.toggle('on',State.fav.includes(pid));
+    const l=b.querySelector('.fl'); if(l)l.textContent=State.fav.includes(pid)?'Salvo':'Salvar';
+    b.setAttribute('aria-pressed',State.fav.includes(pid)?'true':'false')});
   if(currentPath().startsWith('/favoritos'))route();
 }
 function subtotal(){
@@ -1585,6 +1621,7 @@ function renderDrawer(){
     ${u?'':item('#/entrar','Entrar',IC.user)}
     ${u?'':item('#/criar-conta','Criar conta',IC.user)}
     ${item('#/pedidos','Meus pedidos',IC.box)}
+    ${item('#/favoritos','Favoritos',IC.heart,'',State.fav.length?'<span class="flag">'+State.fav.length+'</span>':'')}
     ${isAdmin()?item('#/admin','Painel administrativo',IC.chart,'','<span class="flag">ADMIN</span>'):''}
     ${u?item('#/sair','Sair da conta',IC.logout):''}
     <div class="dsec">Suporte</div>
@@ -1616,7 +1653,13 @@ let sugIndex=-1;
 function renderSuggest(q){
   const box=$('#suggest'); const t=q.trim();
   $('#sClear').classList.toggle('on',!!t);
-  if(!t){box.classList.remove('on');$('#q').setAttribute('aria-expanded','false');return}
+  if(!t){
+    if(!State.buscas.length){box.classList.remove('on');$('#q').setAttribute('aria-expanded','false');return}
+    box.innerHTML=`<div class="sg-row"><div class="sg-h">Buscas recentes</div><button class="sg-x" id="sgClear" type="button">limpar</button></div>
+      <div style="padding:0 6px 10px">${State.buscas.map(b=>`<a href="#/busca?q=${encodeURIComponent(b)}" class="sg-chip">${esc(b)}</a>`).join('')}</div>`;
+    $('#sgClear').onclick=()=>{State.buscas=[];Persist.set('buscas',[]);closeSuggest()};
+    box.classList.add('on');$('#q').setAttribute('aria-expanded','true');sugIndex=-1;return;
+  }
   const res=search(t);
   const marcas=[...new Set(res.map(p=>p.marca))].slice(0,4);
   const cats=[...new Set(res.map(p=>p.catNome))].slice(0,3);
@@ -1637,8 +1680,14 @@ function renderSuggest(q){
   box.classList.add('on');$('#q').setAttribute('aria-expanded','true');sugIndex=-1;
 }
 function closeSuggest(){$('#suggest').classList.remove('on');$('#q').setAttribute('aria-expanded','false')}
+function lembrarBusca(t){
+  const v=t.trim().slice(0,40); if(!v)return;
+  State.buscas=[v,...State.buscas.filter(x=>x.toLowerCase()!==v.toLowerCase())].slice(0,6);
+  Persist.set('buscas',State.buscas);
+}
 function goSearch(){
   const t=$('#q').value.trim(); if(!t)return;
+  lembrarBusca(t);
   closeSuggest();$('#q').blur();
   go('/busca?q='+encodeURIComponent(t));
 }
@@ -1658,6 +1707,9 @@ function cardHTML(p){
     <button class="fav" data-buy="${esc(p.id)}" aria-label="Adicionar ${esc(p.nome)} ao carrinho" ${st===0?'disabled':''}>
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
     </button>
+    <button class="fav hb${fav?' on':''}" data-fav="${esc(p.id)}" aria-label="${fav?'Remover dos favoritos':'Salvar nos favoritos'}" aria-pressed="${fav?'true':'false'}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>
+    </button>
     <div class="card-b">
       <span class="card-brand">${esc(p.marca)}</span>
       <a href="#/p/${esc(p.id)}" class="card-name">${esc(p.nome)}</a>
@@ -1671,6 +1723,15 @@ function cardHTML(p){
 }
 function skeletonGrid(n=4){
   return `<div class="grid">${Array(n).fill(0).map(()=>`<div class="sk-card"><div class="sk a"></div><div class="b"><div class="sk" style="height:9px;width:40%"></div><div class="sk" style="height:13px"></div><div class="sk" style="height:13px;width:70%"></div><div class="sk" style="height:22px;width:55%"></div><div class="sk" style="height:38px"></div></div></div>`).join('')}</div>`;
+}
+function recentHTML(excluir){
+  const l=State.recent.filter(id=>id!==excluir).map(id=>CATALOG.find(p=>p.id===id&&p.ativo)).filter(Boolean).slice(0,8);
+  return l.length?sectionHTML('','Vistos recentemente','',l.map(cardHTML).join(''),true):'';
+}
+function skeletonHome(){
+  return `<div class="sk sk-hero" aria-hidden="true"></div>
+  <div class="sk-sec" aria-busy="true" aria-label="Carregando a loja"><div class="sk" style="height:46px;width:min(240px,60%);margin-bottom:18px"></div></div>
+  ${skeletonGrid(8)}`;
 }
 function sectionHTML(eyebrow,title,href,inner,rail=false){
   return `<section class="section">
@@ -1718,6 +1779,7 @@ function viewHome(){
 
   ${novos.length?sectionHTML('','Novidades','#/novidades',novos.map(cardHTML).join('')):''}
   ${promos.length?sectionHTML('','Promoções','#/promocoes',promos.map(cardHTML).join('')):''}
+  ${recentHTML()}
 
   <div class="marq" aria-hidden="true"><div class="marq-track">${(()=>{const l=BRANDS.flatMap(b=>[b,'original']);return (l.concat(l)).map(x=>`<span>${esc(x)}</span>`).join('')})()}</div></div>
 
@@ -1866,13 +1928,14 @@ function viewProduct(id){
       </div>
       <div class="opt-h"><span>Cor: <b id="corLbl">${esc(p.cores[0].nome)}</b></span></div>
       <div class="colors">${p.cores.map((c,i)=>`<button class="color ${i?'':'on'}" data-cor="${esc(c.nome)}" style="background:linear-gradient(135deg,${c.hex},${c.hex2})" aria-label="${esc(c.nome)}" title="${esc(c.nome)}"></button>`).join('')}</div>
-      <div class="opt-h"><span>Tamanho: <b id="szLbl" style="color:var(--carimbo)">selecione</b></span><a href="#" data-tab="tam">Tabela de medidas</a></div>
+      <div class="opt-h"><span>Tamanho: <b id="szLbl" style="color:var(--carimbo)">selecione</b></span><span style="display:flex;gap:14px"><a href="#" id="szHelp">Qual meu tamanho?</a><a href="#" data-tab="tam">Tabela de medidas</a></span></div>
       <div class="sizes">${p.sizes.map(s=>{const e=stockOf(p,s);
         return `<button class="size" data-size="${esc(s)}" ${e<=0?'disabled':''}>
           <span class="sz-t">${esc(s)}</span>
           <span class="sz-s">${e<=0?'esgotado':(e<=3?'últimas':'disponível')}</span>
         </button>`}).join('')}</div>
       <div id="szErr" class="err">${svg('<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/>',13)} Escolha um tamanho antes de continuar.</div>
+      ${p.sizes.some(s=>stockOf(p,s)<=0)?`<p class="sz-aviso">Seu tamanho esgotou? <a href="${esc('https://wa.me/'+CONFIG.whatsapp+'?text='+encodeURIComponent('Oi! Quero ser avisado quando a peça '+p.marca+' '+p.nome+' (SKU '+p.sku+') voltar no meu tamanho.'))}" target="_blank" rel="noopener">Me avise quando voltar</a></p>`:''}
       <div class="opt-h" style="margin-top:18px"><span>Quantidade</span><span id="stockLbl" class="mono" style="font-size:11.5px;color:var(--texto-3);font-weight:400"></span></div>
       <div style="display:flex;gap:11px;align-items:center">
         <div class="qty"><button id="qtdM" aria-label="Diminuir">−</button><span id="qtdV">1</span><button id="qtdP" aria-label="Aumentar">+</button></div>
@@ -1882,6 +1945,14 @@ function viewProduct(id){
         <button class="btn btn-primary btn-lg btn-block" id="addCart" ${st===0?'disabled':''}>
           ${svg('<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/>',18)} Adicionar ao carrinho</button>
         <button class="btn btn-dark btn-lg btn-block" id="buyNow" ${st===0?'disabled':''}>Comprar agora</button>
+      </div>
+      <div class="pdp-acts">
+        <button class="btn btn-ghost btn-sm${State.fav.includes(p.id)?' on':''}" data-fav="${esc(p.id)}" aria-pressed="${State.fav.includes(p.id)?'true':'false'}">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l8.8 8.8 8.8-8.8a5.5 5.5 0 0 0 0-7.8z"/></svg>
+          <span class="fl">${State.fav.includes(p.id)?'Salvo':'Salvar'}</span></button>
+        <button class="btn btn-ghost btn-sm" id="pdpShare">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+          Compartilhar</button>
       </div>
       <div class="trust">
         <div><span class="ic">${svg('<path d="m9 12 2 2 4-4"/><path d="M12 3l8 3v6c0 5-3.4 8.4-8 9-4.6-.6-8-4-8-9V6z"/>',22)}</span><span class="t">Produto original</span></div>
@@ -1927,6 +1998,7 @@ function viewProduct(id){
     </div>
   </div>
   ${rel.length?sectionHTML('Quem viu este, viu também','Você também pode gostar','#/c/'+p.cat,rel.map(cardHTML).join(''),true):''}
+  ${recentHTML(p.id)}
   <div class="stickybuy" id="stickyBuy">
     <div style="flex:1;min-width:0"><div class="mono" style="font-size:10px;color:var(--texto-3)">${esc(p.marca)}</div><div class="disp" style="font-size:18px">${BRL(p.preco)}</div></div>
     <button class="btn btn-primary" style="flex:1.5" id="addCart2" ${st===0?'disabled':''}>Adicionar</button>
@@ -2745,11 +2817,13 @@ function go(path,repl=false){
   if(HISTORY_MODE){
     const url=(BASE+rota)||'/';
     if(url===location.pathname+location.search){route();return}
+    SCROLLS[currentPath()]=window.scrollY;
     history[repl?'replaceState':'pushState']({},'',url);
     route();
   }else{
     const alvo='#'+rota;
     if(location.hash===alvo){route();return}
+    SCROLLS[currentPath()]=window.scrollY; PUSHING=true;
     if(repl) location.replace(alvo); else location.hash=alvo;
   }
 }
@@ -2781,6 +2855,9 @@ function parseHash(){
   const [path,qs]=h.split('?');
   return {parts:path.split('/').filter(Boolean),q:new URLSearchParams(qs||'')};
 }
+/* Posição da rolagem por caminho. Voltar/avançar restaura; link novo vai ao topo. */
+const SCROLLS={}; let POP=false, PUSHING=false;
+if('scrollRestoration' in history) history.scrollRestoration='manual';
 let lastRouted='';
 function route(){
   clearInterval(heroTimer);
@@ -2790,6 +2867,7 @@ function route(){
   if(pathNow!==lastRouted){lastRouted=pathNow;main.classList.remove('enter');void main.offsetWidth;main.classList.add('enter')}
   const A=parts[0]||'', B=parts[1]||'';
   if(A!=='checkout'&&CK.step===5){CK.step=1;CK.ship=null;}
+  const restaurar=POP?(SCROLLS[currentPath()]||0):0; POP=false;
   window.scrollTo({top:0,behavior:'instant'});
   if(A!=='busca'){$('#q').value='';$('#sClear').classList.remove('on')}
   $('#footer').style.display=(A==='admin')?'none':'';
@@ -2805,7 +2883,7 @@ function route(){
     if(!c){main.innerHTML=viewNotFound()}else{main.innerHTML=viewListing(c.nome,'',active.filter(p=>p.cat===c.id));setSEO(`${c.nome} — ALVEXZ IMPORTS`,`${c.nome} originais na ALVEXZ IMPORTS, com envio seguro para todo o Brasil.`)}}
   else if(A==='marca'){ctxGuard('marca/'+B);const m=BRANDS.find(x=>slug(x)===B);
     if(!m){main.innerHTML=viewNotFound()}else{main.innerHTML=viewListing(m,'',active.filter(p=>p.marca===m));setSEO(`${m} — ALVEXZ IMPORTS`,`Peças ${m} originais conferidas uma a uma.`)}}
-  else if(A==='busca'){ctxGuard('busca/'+(q.get('q')||''));const t=q.get('q')||'';$('#q').value=t;const res=search(t);
+  else if(A==='busca'){ctxGuard('busca/'+(q.get('q')||''));const t=q.get('q')||'';$('#q').value=t;lembrarBusca(t);const res=search(t);
     main.innerHTML=viewListing(`“${t}”`,`${res.length} ${res.length===1?'resultado':'resultados'}`,res);setSEO(`Busca: ${t} — ALVEXZ IMPORTS`,`Resultados para ${t}.`)}
   else if(A==='p'){main.innerHTML=viewProduct(B);bindPDP(B)}
   else if(A==='carrinho'){main.innerHTML=viewCartPage();if(State.cep)renderFretes(State.cep)}
@@ -2840,6 +2918,7 @@ function route(){
   bindCommon();
   closeMenu();closeSuggest();
   $('#waBtn').classList.toggle('up',A==='p'&&window.innerWidth<1024);
+  if(restaurar) requestAnimationFrame(()=>window.scrollTo({top:restaurar,behavior:'instant'}));
 }
 let lastCtx='';
 function ctxGuard(key){
@@ -3291,6 +3370,38 @@ function bindPDP(id){
   };
   $('#addCart').onclick=add;
   const a2=$('#addCart2'); if(a2)a2.onclick=add;
+  // compartilhar: Web Share onde existe (celular), senão copia o link
+  const sh=$('#pdpShare'); if(sh)sh.onclick=async()=>{
+    const url=location.href, dados={title:p.marca+' '+p.nome,text:p.nome+' por '+BRL(p.preco)+' na ALVEXZ IMPORTS',url};
+    if(navigator.share){ try{await navigator.share(dados);return}catch(e){ if(e&&e.name==='AbortError')return } }
+    try{await navigator.clipboard.writeText(url);toast('Link copiado.','ok')}
+    catch(e){openModal('<h3>Copie o link</h3><input class="inp" readonly value="'+esc(url)+'" onfocus="this.select()" style="margin-top:12px">')}
+  };
+  // qual meu tamanho: altura + peso dão uma sugestão aproximada
+  const szh=$('#szHelp'); if(szh)szh.onclick=e=>{e.preventDefault();
+    openModal(`<h3>Qual meu tamanho?</h3>
+      <p style="color:var(--texto-2);font-size:13px;margin:6px 0 0">Sugestão aproximada para a modelagem <b>${esc(p.modelo)}</b>. Em dúvida entre dois, escolha o maior: a numeração importada costuma ser menor que a brasileira.</p>
+      <div class="szh">
+        <label>Altura (cm)<input class="inp" id="szhA" type="number" inputmode="numeric" min="140" max="220" placeholder="175"></label>
+        <label>Peso (kg)<input class="inp" id="szhP" type="number" inputmode="numeric" min="35" max="160" placeholder="72"></label>
+      </div>
+      <div id="szhR" class="szh-r"></div>
+      <button class="btn btn-primary btn-block" id="szhGo">Calcular</button>`);
+    const calc=()=>{
+      const a=+$('#szhA').value, pe=+$('#szhP').value, r=$('#szhR');
+      if(!(a>=140&&a<=220&&pe>=35&&pe<=160)){r.innerHTML='<span style="color:var(--carimbo)">Confira a altura (140–220 cm) e o peso (35–160 kg).</span>';return}
+      const base=pe+(a-175)*0.35;
+      const t=base<56?'PP':base<66?'P':base<78?'M':base<91?'G':'GG';
+      const tem=stockOf(p,t)>0;
+      r.innerHTML=`Para ${a} cm e ${pe} kg, sugerimos <b class="disp" style="font-size:30px;margin-left:4px">${t}</b><br>
+        <span style="color:var(--texto-2);font-size:13px">${tem?'Tem no estoque desta peça.':'Esse tamanho está esgotado nesta peça.'}</span>
+        <div style="margin-top:12px"><button class="btn btn-dark btn-sm" id="szhUse" ${tem?'':'disabled'}>Usar ${t}</button></div>`;
+      $('#szhUse').onclick=()=>{closeModal();const b=$('.size[data-size="'+t+'"]');if(b){b.click();b.scrollIntoView({behavior:'smooth',block:'center'})}};
+    };
+    $('#szhGo').onclick=calc;
+    $$('#szhA,#szhP').forEach(i=>i.onkeydown=e=>{if(e.key==='Enter')calc()});
+    $('#szhA').focus();
+  };
   $('#buyNow').onclick=()=>{if(add())go('/checkout')};
   // barra fixa mobile aparece após rolar
   const onScroll=()=>{const sticky=document.getElementById('stickyBuy');
@@ -3680,7 +3791,7 @@ function initEvents(){
   });
   const q=$('#q');
   q.addEventListener('input',debounce(()=>renderSuggest(q.value),150));
-  q.addEventListener('focus',()=>{if(q.value.trim())renderSuggest(q.value)});
+  q.addEventListener('focus',()=>renderSuggest(q.value));
   q.addEventListener('keydown',e=>{
     const items=$$('#suggest .sg-i');
     if(e.key==='Enter'){e.preventDefault();
@@ -3749,8 +3860,8 @@ function initEvents(){
       const open=a.classList.toggle('on');b.style.maxHeight=open?b.scrollHeight+'px':'0';
     }
   });
-  window.addEventListener('hashchange',route);
-  window.addEventListener('popstate',route);
+  window.addEventListener('hashchange',()=>{POP=!PUSHING;PUSHING=false;route()});
+  window.addEventListener('popstate',()=>{POP=true;route()});
   /* Em modo History, o clique num link interno não pode recarregar a página. */
   document.addEventListener('click',e=>{
     if(!HISTORY_MODE) return;
@@ -3782,10 +3893,14 @@ function initTopbar(){
   $('#topbarTrack').innerHTML=line+line;
 }
 
+/* v5: funcional */
 /* ---------- 34. BOOT ---------- */
 (async function init(){
   await Persist.init();
   loadBrandLogos();
+  /* Enquanto o catálogo vem do banco a tela mostra o esqueleto da home,
+     em vez de ficar preta. */
+  if(SB){ $('#main').innerHTML=skeletonHome(); }
   /* Modo banco: só vira ONLINE se o catálogo do Supabase carregar de verdade.
      Qualquer falha (sem rede, chave errada, projeto pausado) cai no modo local
      e a loja continua abrindo, com aviso no console. */
@@ -3820,7 +3935,13 @@ function initTopbar(){
   }
   State.cookies=Persist.get('cookies',null);
   State.recent=Persist.get('recent',[]);
+  State.buscas=Persist.get('buscas',[]).slice(0,6);
   initTopbar();renderFooter();initEvents();paintBadges();initAmbiente();initMotion();
+  /* App instalável: só em http(s) e fora do servidor de desenvolvimento,
+     para o cache não esconder uma edição local. */
+  if(HISTORY_MODE&&'serviceWorker' in navigator&&!/^(127\.0\.0\.1|localhost)$/.test(location.hostname)){
+    window.addEventListener('load',()=>navigator.serviceWorker.register(BASE+'/sw.js',{scope:BASE+'/'}).catch(e=>console.warn('sw',e.message)));
+  }
   window.addEventListener('load',bindBrandLogos);
   /* Cada render troca innerHTML. Em vez de chamar normalizeLinks em vinte
      lugares, um observador cuida de tudo que entra no DOM. */

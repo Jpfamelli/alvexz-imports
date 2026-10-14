@@ -12,6 +12,7 @@ node servir.mjs
 
 Abre em `http://127.0.0.1:4700` (servidor com rewrite para o roteador de URLs limpas).
 Abrir o `index.html` direto com dois cliques também funciona (modo `file://`, rotas com `#/`).
+O service worker só registra fora de `127.0.0.1`, então o servidor local nunca serve cache velho.
 
 ## Publicar
 
@@ -27,6 +28,7 @@ Outras hospedagens: arquivos de rewrite prontos em `hospedagem/`.
 ## Estrutura
 
 - `index.html` — a loja inteira
+- `sw.js` + `manifest.webmanifest` + `imagens/icone-*.png` — app instalável (gerar ícones: `node ferramentas/gerar-icones.mjs`)
 - `sql/` — schema do banco (Supabase) e cadastro de peças
 - `supabase/functions/` — `criar-checkout` e `stripe-webhook`
 - `docs/` — passo a passo do banco, gateway, newsletter

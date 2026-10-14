@@ -43,6 +43,20 @@ para React/Next sem ele pedir.
   com curvas; fundo claro antigo foi abandonado porque brigava com o tema).
   Categorias: camisetas, calças, moletons, conjuntos, jaquetas, shorts.
   **Não existem** tênis nem acessórios. Grade PP-GG.
+- **Favoritos, vistos recentemente e buscas recentes** (v5, 2026-10-14) vivem só
+  no navegador (`Persist`: `fav`, `recent`, `buscas`). Coração no card fica
+  abaixo da sacola (top:42px) para não cobrir o botão Comprar. `recentHTML()`
+  monta a esteira na home e na ficha (exclui a peça aberta).
+- **App instalável** (v5): `manifest.webmanifest` + `sw.js` + ícones PNG em
+  `imagens/icone-*.png` (gerados por `ferramentas/gerar-icones.mjs`, sem
+  dependência). O `<link rel=manifest>` é injetado por script no head porque
+  o caminho depende da hospedagem (raiz/subpasta). O service worker só registra
+  em http(s) fora de 127.0.0.1/localhost; navegação é rede-primeiro (deploy
+  aparece na hora), estáticos/fontes cache-primeiro; Supabase nunca entra no
+  cache. Para invalidar tudo, trocar `VERSAO` no `sw.js`. CSP ganhou
+  `manifest-src` e `worker-src`.
+- **Rolagem** (v5): `history.scrollRestoration='manual'`; `go()` guarda
+  `SCROLLS[caminho]` e voltar/avançar (`POP`) restaura depois do render.
 - **Sem avaliações**: eram fictícias e foram removidas. Só religar com
   avaliações reais (tabela `reviews` existe, com regra "só avalia quem comprou").
 - **Pagamento**: só Pix (7% off **sobre as peças**, frete não desconta) e
@@ -150,7 +164,11 @@ cancelamento). Checkout de ponta a ponta com Stripe **ainda não** (sem chave).
    colocar essa URL em `SITE_URL` (secret); `og:url`/`og:image` no head já apontam para o Pages — trocar quando tiver domínio próprio; e em Auth → URL Configuration →
    Site URL no painel do Supabase (senão o link de confirmação de e-mail cai
    em localhost:3000).
-4. Menores: fotos reais das 20 peças (painel → Editar → Enviar fotos),
+4. Ficha: "Qual meu tamanho?" usa heurística peso + 0,35×(altura−175) com
+   cortes 56/66/78/91 → PP..GG; é aproximação declarada na tela. "Me avise
+   quando voltar" abre WhatsApp com a peça preenchida (sem backend de
+   lista de espera; se quiser automatizar, tabela `avise_me` + Edge Function).
+5. Menores: fotos reais das 20 peças (painel → Editar → Enviar fotos),
    formulário Brevo em HTML puro, frete real (hoje tabela por faixa de CEP em
    `supabase/functions/checkout/frete.ts` e `fretes()` no site — manter iguais).
 
@@ -172,10 +190,15 @@ cancelamento). Checkout de ponta a ponta com Stripe **ainda não** (sem chave).
 5. XSS: injetar `"><img src=x onerror=window.__x=1>` em nome de
    produto/categoria/marca/cupom/banner e varrer rotas e abas do painel.
 6. Cupom BEMVINDOS5 aplica 5%; caixa "18 anos" NÃO existe no checkout.
-7. Modo banco: console deve dizer `loja carregada / banco Supabase / N produtos`.
+7. Fluxos v5 cobertos por `qa-v5.mjs` (puppeteer-core + Chrome instalado, ver
+   memória "QA de sites com puppeteer"): favoritar, voltar com rolagem, vistos
+   recentemente, qual meu tamanho, busca recente, favoritos, estouro em 390.
+   O painel do navegador do app às vezes fica com viewport 0 — não confiar
+   nele para rolagem.
+8. Modo banco: console deve dizer `loja carregada / banco Supabase / N produtos`.
    Se disser `modo local`, olhar a CSP ou a chave.
-8. Versões anteriores em `alvexz-store.v1/v2/v3.html` (ignoradas no git);
-   v2, v3 e v4 foram aplicadas por `ferramentas/patch-v2/3/4.mjs`
+9. Versões anteriores em `alvexz-store.v1/v2/v3/v4.html` (ignoradas no git);
+   v2 a v5 foram aplicadas por `ferramentas/patch-v2/3/4/5.mjs`
    (idempotentes, âncoras de texto — patches novos seguem o mesmo padrão).
 
 Login de teste do painel (modo local, sem banco): `gimoreiramendes@gmail.com` +
