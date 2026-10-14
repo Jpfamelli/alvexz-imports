@@ -35,6 +35,10 @@ para React/Next sem ele pedir.
   jsdelivr (liberado na CSP). `ONLINE` só vira true se `loadCatalog()`
   carregar do banco; qualquer falha cai no modo local com aviso no console.
   Todo código novo que grava algo precisa tratar os dois: `if(ONLINE){...}`.
+  Boot espera o banco no máximo 8 s (`Promise.race`); estourou, `BOOT_LOCAL`
+  vira true e `loadCatalog()` ignora resposta atrasada (não troca o catálogo
+  no meio da sessão). Sem isso o esqueleto ficava preso e o service worker
+  não registrava quando o DNS do Supabase demorava a falhar.
 - **Catálogo**: no banco são 20 peças (mesmas do `SEED`, cadastradas via
   `sql/seed-produtos.sql`), variantes por tamanho × cor. No front o produto
   tem `id` = slug (URL), `uuid`, `variantes[]`, `estoque{tam: soma}`, `fotos[]`.
