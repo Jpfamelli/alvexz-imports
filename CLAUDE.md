@@ -128,6 +128,13 @@ Projeto **`nmzpdaqdpzlvfazahgsv`** ("alvexz-imports", São Paulo), criado em
 basta rodar `sql/supabase-schema.sql` + `sql/seed-produtos.sql` lá, publicar
 as duas funções de `supabase/functions/` e trocar URL/chave no `CONFIG`.
 
+**Em 2026-10-14 o projeto estava INACTIVE** (pausado por inatividade do plano
+gratuito; o host nem resolve no DNS e o site cai no catálogo local, sem erro).
+`restore_project` falhou: a conta jpfamellistos já tem 2 projetos gratuitos
+ativos (limite). Para religar: pausar/apagar outro projeto ou fazer upgrade,
+depois restaurar pelo painel. O site funciona igual em modo local, só sem
+pedidos/login reais.
+
 URL: `https://nmzpdaqdpzlvfazahgsv.supabase.co`. Schema em
 `sql/supabase-schema.sql` (v2): 16 tabelas, RLS em todas, buckets
 `product-images`, `banners`, `brand-logos`. Funções: `criar_pedido`,
