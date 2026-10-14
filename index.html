@@ -1124,6 +1124,7 @@ const SB=(window.supabase&&CONFIG.SUPABASE_URL&&CONFIG.SUPABASE_ANON_KEY)
   ? window.supabase.createClient(CONFIG.SUPABASE_URL,CONFIG.SUPABASE_ANON_KEY)
   : null;
 let ONLINE=false;
+let BOOT_LOCAL=false; // true quando o boot desistiu do banco (demorou ou falhou)
 
 /* ---------- 2. UTILITÁRIOS ---------- */
 const $=(s,r=document)=>r.querySelector(s);
@@ -1365,6 +1366,7 @@ async function loadCatalog(){
   ]);
   const err=cats.error||brands.error||prods.error||bans.error;
   if(err) throw new Error(err.message);
+  if(BOOT_LOCAL) return; // a loja já abriu no modo local; não trocar o catálogo no meio da sessão
   CATS=(cats.data||[]).map(c=>({id:c.slug,uuid:c.id,nome:c.nome,tipo:c.tipo||'camiseta',ativo:c.ativo!==false,c:['#1C1C1F','#0A0A0C']}));
   DB_BRANDS=brands.data||[];
   BRANDS=DB_BRANDS.filter(b=>b.ativo!==false).map(b=>b.nome);
@@ -3905,8 +3907,14 @@ function initTopbar(){
      Qualquer falha (sem rede, chave errada, projeto pausado) cai no modo local
      e a loja continua abrindo, com aviso no console. */
   if(SB){
-    try{ await loadCatalog(); ONLINE=true; }
-    catch(e){ console.warn('Supabase indisponível, usando catálogo local:',e.message); }
+    /* Banco pausado ou sem rede: o DNS pode demorar vários segundos para
+       falhar. Depois de 8 s a loja abre no modo local em vez de ficar no
+       esqueleto; se a resposta chegar atrasada, loadCatalog() a ignora. */
+    try{
+      await Promise.race([loadCatalog(), new Promise((_,rej)=>setTimeout(()=>rej(new Error('banco demorou mais de 8 s')),8000))]);
+      ONLINE=true;
+    }
+    catch(e){ BOOT_LOCAL=true; console.warn('Supabase indisponível, usando catálogo local:',e.message); }
   }
   if(!ONLINE){
     const saved=Persist.get('catalog',null);
