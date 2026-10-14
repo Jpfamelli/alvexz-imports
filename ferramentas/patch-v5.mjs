@@ -237,7 +237,9 @@ rep('sw',`  initTopbar();renderFooter();initEvents();paintBadges();initAmbiente(
   /* App instalável: só em http(s) e fora do servidor de desenvolvimento,
      para o cache não esconder uma edição local. */
   if(HISTORY_MODE&&'serviceWorker' in navigator&&!/^(127\\.0\\.0\\.1|localhost)$/.test(location.hostname)){
-    window.addEventListener('load',()=>navigator.serviceWorker.register(BASE+'/sw.js',{scope:BASE+'/'}).catch(e=>console.warn('sw',e.message)));
+    /* O boot é assíncrono: quando chega aqui, o evento load já pode ter passado. */
+    const regSW=()=>navigator.serviceWorker.register(BASE+'/sw.js',{scope:BASE+'/'}).catch(e=>console.warn('sw',e.message));
+    if(document.readyState==='complete') regSW(); else window.addEventListener('load',regSW);
   }`);
 
 /* marca de versão */
